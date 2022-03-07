@@ -1,8 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 
-public class ARPlaneDetection_ : MonoBehaviour
+public class ARPlaneDetection : MonoBehaviour
 {
     [SerializeField] private ARPlaneManager arPlaneManager;
     [SerializeField] private GameObject floorPrefab;
@@ -43,7 +44,7 @@ public class ARPlaneDetection_ : MonoBehaviour
         arPlaneManager.enabled = false;
         foreach (var plane in arPlaneManager.trackables)
         {
-                plane.gameObject.SetActive(false);
+            plane.gameObject.SetActive(false);
         }
         this.enabled = false;
     }
@@ -52,5 +53,4 @@ public class ARPlaneDetection_ : MonoBehaviour
     {
         arPlaneManager.planesChanged -= PlanesChanged;
     }
-
 }

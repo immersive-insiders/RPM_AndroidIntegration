@@ -1,12 +1,17 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
 
-public class ARTapToPlaceTest : MonoBehaviour
+
+public class ARTapToPlace : MonoBehaviour
 {
-    [SerializeField] GameObject avatarGameObject;
+    //To use the ImportedAvatar property and get the Avatar GameObject
+    [SerializeField] private AvatarImporter avatarImporter;
     [SerializeField] Camera arCam;
 
-    private Vector3 newPosition= Vector3.zero;
+    private Vector3 newPosition = Vector3.zero;
     public Vector3 TouchPosition { get => newPosition; }
 
     public UnityEvent OnNewTouch;
@@ -21,18 +26,17 @@ public class ARTapToPlaceTest : MonoBehaviour
             {
                 Ray ray = arCam.ScreenPointToRay(touch.position);
                 RaycastHit hitAnything;
-
-                if(Physics.Raycast(ray, out hitAnything, Mathf.Infinity))
+                if (Physics.Raycast(ray, out hitAnything, Mathf.Infinity))
                 {
-                    if(hitAnything.transform.gameObject.CompareTag("Floor"))
+                    if (hitAnything.transform.gameObject.CompareTag("Floor"))
                     {
                         Debug.Log("<<<<>>>>" + hitAnything.transform.gameObject.tag);
-                        // for the 1st time enable the avatar and place it at the touch position
-                        if (avatarGameObject.activeSelf == false)
+
+                        if (avatarImporter.ImportedAvatar.activeSelf == false)
                         {
-                            avatarGameObject.SetActive(true);
-                            avatarGameObject.transform.rotation = hitAnything.transform.rotation;
-                            avatarGameObject.transform.position = hitAnything.point;
+                            avatarImporter.ImportedAvatar.SetActive(true);
+                            avatarImporter.ImportedAvatar.transform.rotation = hitAnything.transform.rotation;
+                            avatarImporter.ImportedAvatar.transform.position = hitAnything.point;
                         }
                         else
                         {
@@ -42,10 +46,9 @@ public class ARTapToPlaceTest : MonoBehaviour
                             OnNewTouch.Invoke();
                         }
                     }
-
                 }
             }
+
         }
     }
 }
-        

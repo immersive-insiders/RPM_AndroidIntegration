@@ -35,7 +35,7 @@ public class AvatarImporter : MonoBehaviour
     private void StoreAvatar(GameObject avatar, AvatarMetaData meta)
     {
         importedAvatar = avatar;
-        importedAvatar.transform.localScale = Vector3.one * 0.2f;
+        importedAvatar.transform.localScale = Vector3.one * 0.2f; //scaling it to 0.2 of its original size
         importedAvatar.SetActive(false);
     }
 
