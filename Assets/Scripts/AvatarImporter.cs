@@ -6,10 +6,9 @@ public class AvatarImporter : MonoBehaviour
 {
     [SerializeField] private WebView webView;
 
-    public UnityEvent OnAvatarStored;
-
     private GameObject importedAvatar;
 
+    public UnityEvent OnAvatarStored;
 
     public GameObject ImportedAvatar
     {
@@ -42,5 +41,4 @@ public class AvatarImporter : MonoBehaviour
         importedAvatar.SetActive(false);
         OnAvatarStored.Invoke();
     }
-
 }

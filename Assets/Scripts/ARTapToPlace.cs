@@ -4,6 +4,7 @@ using UnityEngine.Events;
 
 public class ARTapToPlace : MonoBehaviour
 {
+    //To use the ImportedAvatar property and get the Avatar GameObject
     [SerializeField] private AvatarImporter avatarImporter;
     [SerializeField] Camera arCam;
 

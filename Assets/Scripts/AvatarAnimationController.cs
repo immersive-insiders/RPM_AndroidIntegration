@@ -7,7 +7,7 @@ public class AvatarAnimationController : MonoBehaviour
 
     private Animator animator;
 
-    private void Start()
+    private void OnEnable()
     {
         avatarImporter.OnAvatarStored.AddListener(AssignAvatarController);
     }

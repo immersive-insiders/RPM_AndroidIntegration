@@ -6,15 +6,16 @@ using UnityEngine.XR.ARFoundation;
 public class ARPlaneDetection : MonoBehaviour
 {
     [SerializeField] private ARPlaneManager arPlaneManager;
-    [SerializeField] private GameObject floorPrefab;
+    //[SerializeField] private GameObject floorPrefab;
 
-    private GameObject floor;
+    //private GameObject floor;
 
     private bool isFloorPlaced;
 
     private List<ARPlane> foundPlanes = new List<ARPlane>();
+    private ARPlane foundPlane;
 
-    private void Start()
+    private void OnEnable()
     {
         arPlaneManager.planesChanged += PlanesChanged;
     }
@@ -31,9 +32,11 @@ public class ARPlaneDetection : MonoBehaviour
             if (plane.extents.x * plane.extents.y >= 0.5f && !isFloorPlaced)
             {
                 isFloorPlaced = true;
-                floor = Instantiate(floorPrefab);
-                floor.transform.position = plane.center;
-                floor.transform.up = plane.normal;
+                foundPlane = plane;
+                foundPlane.tag = "Floor";
+                //floor = Instantiate(floorPrefab);
+                //floor.transform.position = plane.center;
+                //floor.transform.up = plane.normal;
                 DisablePlanes();
             }
         }
@@ -45,7 +48,8 @@ public class ARPlaneDetection : MonoBehaviour
 
         foreach (var plane in arPlaneManager.trackables)
         {
-            plane.gameObject.SetActive(false);
+            if( plane != foundPlane)
+                plane.gameObject.SetActive(false);
         }
 
         this.enabled = false;

@@ -14,9 +14,11 @@ public class MovementController : MonoBehaviour
     private bool isTurnning;
     private bool isMoving;
 
-    private void Start()
+    private void OnEnable()
     {
         arTapToPlace.OnNewTouch.AddListener(OnTouch);
+        avatarImporter.OnAvatarStored.AddListener(GetAvatarTransform);
+        
     }
 
     private void OnTouch()
@@ -46,13 +48,18 @@ public class MovementController : MonoBehaviour
         }
     }
 
+    private void GetAvatarTransform()
+    {
+        avatarTransform = avatarImporter.ImportedAvatar.transform;
+    }
+
     void Update()
     {
 
-        if (avatarImporter.ImportedAvatar != null && avatarTransform == null)
-        {
-            avatarTransform = avatarImporter.ImportedAvatar.transform;
-        }
+        //if (avatarImporter.ImportedAvatar != null && avatarTransform == null)
+        //{
+        //    avatarTransform = avatarImporter.ImportedAvatar.transform;
+        //}
 
         if (isTurnning)
         {
@@ -107,6 +114,7 @@ public class MovementController : MonoBehaviour
     private void OnDisable()
     {
         arTapToPlace.OnNewTouch.RemoveListener(OnTouch);
+        avatarImporter.OnAvatarStored.AddListener(GetAvatarTransform);
 
     }
 }
