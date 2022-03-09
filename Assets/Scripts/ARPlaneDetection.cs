@@ -42,10 +42,12 @@ public class ARPlaneDetection : MonoBehaviour
     private void DisablePlanes()
     {
         arPlaneManager.enabled = false;
+
         foreach (var plane in arPlaneManager.trackables)
         {
             plane.gameObject.SetActive(false);
         }
+
         this.enabled = false;
     }
 

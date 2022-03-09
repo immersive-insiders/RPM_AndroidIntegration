@@ -3,23 +3,19 @@ using UnityEngine;
 public class AvatarAnimationController : MonoBehaviour
 {
     [SerializeField] private AvatarImporter avatarImporter;
-    
     [SerializeField] private RuntimeAnimatorController avatarController;
 
     private Animator animator;
 
-    private bool isAnimatorAssigned = false;
-
-    private void Update()
+    private void Start()
     {
-        // make sure that the avatar is loaded before getting the Animator component
-        // and also make sure it gets assigned to the variable just once.
-        if (avatarImporter.ImportedAvatar != null && !isAnimatorAssigned)
-        {
-            animator = avatarImporter.ImportedAvatar.transform.GetComponent<Animator>();
-            animator.runtimeAnimatorController = avatarController;
-            isAnimatorAssigned = true;
-        }
+        avatarImporter.OnAvatarStored.AddListener(AssignAvatarController);
+    }
+
+    private void AssignAvatarController()
+    {
+        animator = avatarImporter.ImportedAvatar.transform.GetComponent<Animator>();
+        animator.runtimeAnimatorController = avatarController;
     }
 
     public void StartWalkAnimation()
@@ -49,14 +45,19 @@ public class AvatarAnimationController : MonoBehaviour
         this.animator.SetBool("isTurningLeft", false);
         this.animator.SetBool("isTurningRight", false);
     }
+    public bool IsMoveAnimatorPlaying()
+    {
+        return animator.GetCurrentAnimatorStateInfo(0).IsName("Walking");
+    }
 
     public bool IsTurnAnimatorPlaying()
     {
         return animator.GetCurrentAnimatorStateInfo(0).IsName("RightTurn") || animator.GetCurrentAnimatorStateInfo(0).IsName("LeftTurn");
     }
 
-    public bool IsMoveAnimatorPlaying()
+
+    private void OnDisable()
     {
-        return animator.GetCurrentAnimatorStateInfo(0).IsName("Walking");
+        avatarImporter.OnAvatarStored.RemoveListener(AssignAvatarController);
     }
 }

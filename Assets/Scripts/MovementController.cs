@@ -21,15 +21,14 @@ public class MovementController : MonoBehaviour
 
     private void OnTouch()
     {
-        Debug.Log("<< ON touch has been called>>>>");
         avatarAnimationController.StopWalkAnimation();
         avatarAnimationController.StopTurnAnimation();
         touchPos = arTapToPlace.TouchPosition;
 
         //using the helper method to calculate the angle
         float angle = CalculateAngle(touchPos, avatarTransform.position, avatarTransform);
-        
-        // if there is no chnage in angle then avatar has to just move foward
+
+        // if there is no change in angle then avatar has to just move forward
         if (angle == 0)
         {
             isTurnning = false;
@@ -49,23 +48,23 @@ public class MovementController : MonoBehaviour
 
     void Update()
     {
-        
-        if (avatarImporter.ImportedAvatar != null && avatarTransform==null)
+
+        if (avatarImporter.ImportedAvatar != null && avatarTransform == null)
         {
             avatarTransform = avatarImporter.ImportedAvatar.transform;
         }
 
         if (isTurnning)
         {
-            Debug.Log("<< Update turn>>>>");
+            // If the dot product of two normalized vectors is:
+            //      1 then, the vectors are in the same direction.
+            //      -1 then, the vectors are in opposite direction
+            //      0 then, the vectors are 90deg to each other
 
-            // If the dot porduct of two normalized vector is 1 then, the vectors are in same direction
-            // If the dot porduct of two normalized vector is -1 then, the vectors are in opposite direction
-            // If the dot porduct of two normalized vector is 0 then, the vectors are 90deg to each other
-            // So if the dot product is >0.9 it's really close to the same direction.
-            if (Vector3.Dot(avatarTransform.forward, Vector3.ProjectOnPlane(touchPos - avatarTransform.position, avatarTransform.up).normalized) > 0.9f)
+            if (Vector3.Dot(avatarTransform.forward, Vector3.Normalize(touchPos - avatarTransform.position)) > 0.9f)
             {
                 avatarAnimationController.StopTurnAnimation();
+
                 //once the avatar has turned, the moving animation can start
                 isMoving = true;
                 isTurnning = false;
@@ -74,20 +73,21 @@ public class MovementController : MonoBehaviour
 
         if (isMoving && !avatarAnimationController.IsTurnAnimatorPlaying())
         {
-            Debug.Log("<< Update move>>>>");
-
             if (Vector3.Distance(avatarTransform.position, touchPos) > 0.1f)
             {
                 avatarTransform.LookAt(touchPos); // to account of that 0.1 rotation that's missed
-                if (!avatarAnimationController.IsMoveAnimatorPlaying())
-                {
-                    Debug.Log("<<<<<<< Rot has completed, Starting Move animation >>>>>>> ");
-                    avatarAnimationController.StartWalkAnimation();
-                }
 
-                // it's normalized so that the velocity remains constant
-                avatarTransform.position += (touchPos - avatarTransform.position).normalized * 0.3f * Time.deltaTime;
+                // to make sure the animation is played just once in the entire update cycle
+                if (!avatarAnimationController.IsMoveAnimatorPlaying())
+                    avatarAnimationController.StartWalkAnimation();
+
+
+                // it's normalized so that the velocity remains constant. 
                 // 0.3 is a magic number to match the speed with the animation speed
+                avatarTransform.position += (touchPos - avatarTransform.position).normalized * 0.3f * Time.deltaTime;
+
+                //  the below code works as well
+                //  avatarTransform.position = Vector3.MoveTowards(avatarTransform.position, touchPos,  0.3f * Time.deltaTime);
             }
             else
             {
@@ -98,14 +98,15 @@ public class MovementController : MonoBehaviour
 
     }
 
-    private void OnDisable()
-    {
-        arTapToPlace.OnNewTouch.RemoveListener(OnTouch);
-
-    }
     private float CalculateAngle(Vector3 targetPos, Vector3 currentPos, Transform avatarTransform)
     {
         float angle = Vector3.SignedAngle(currentPos - targetPos, avatarTransform.forward, avatarTransform.up);
         return angle;
+    }
+
+    private void OnDisable()
+    {
+        arTapToPlace.OnNewTouch.RemoveListener(OnTouch);
+
     }
 }
