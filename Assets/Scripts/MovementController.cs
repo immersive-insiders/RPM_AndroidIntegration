@@ -17,50 +17,11 @@ public class MovementController : MonoBehaviour
     private void OnEnable()
     {
         arTapToPlace.OnNewTouch.AddListener(OnTouch);
-        avatarImporter.OnAvatarStored.AddListener(GetAvatarTransform);
-        
-    }
-
-    private void OnTouch()
-    {
-        avatarAnimationController.StopWalkAnimation();
-        avatarAnimationController.StopTurnAnimation();
-        touchPos = arTapToPlace.TouchPosition;
-
-        //using the helper method to calculate the angle
-        float angle = CalculateAngle(touchPos, avatarTransform.position, avatarTransform);
-
-        // if there is no change in angle then avatar has to just move forward
-        if (angle == 0)
-        {
-            isTurnning = false;
-            isMoving = true;
-        }
-
-        // else, the avatar has to turn in the direction of touch before moving.
-        else
-        {
-            isTurnning = true;
-            // Setting moving to false because if the user touches the screen to a new point while the avatar is moving
-            // then the moving animation has to be stopper
-            isMoving = false;
-            avatarAnimationController.StartTurnAnimation(angle);
-        }
-    }
-
-    private void GetAvatarTransform()
-    {
-        avatarTransform = avatarImporter.ImportedAvatar.transform;
+        avatarImporter.OnAvatarStored.AddListener(GetAvatarTransform);       
     }
 
     void Update()
     {
-
-        //if (avatarImporter.ImportedAvatar != null && avatarTransform == null)
-        //{
-        //    avatarTransform = avatarImporter.ImportedAvatar.transform;
-        //}
-
         if (isTurnning)
         {
             // If the dot product of two normalized vectors is:
@@ -111,10 +72,41 @@ public class MovementController : MonoBehaviour
         return angle;
     }
 
+    private void OnTouch()
+    {
+        avatarAnimationController.StopWalkAnimation();
+        avatarAnimationController.StopTurnAnimation();
+        touchPos = arTapToPlace.TouchPosition;
+
+        //using the helper method to calculate the angle
+        float angle = CalculateAngle(touchPos, avatarTransform.position, avatarTransform);
+
+        // if there is no change in angle then avatar has to just move forward
+        if (angle == 0)
+        {
+            isTurnning = false;
+            isMoving = true;
+        }
+
+        // else, the avatar has to turn in the direction of touch before moving.
+        else
+        {
+            isTurnning = true;
+            // Setting moving to false because if the user touches the screen to a new point while the avatar is moving
+            // then the moving animation has to be stopper
+            isMoving = false;
+            avatarAnimationController.StartTurnAnimation(angle);
+        }
+    }
+
+    private void GetAvatarTransform()
+    {
+        avatarTransform = avatarImporter.ImportedAvatar.transform;
+    }
+
     private void OnDisable()
     {
         arTapToPlace.OnNewTouch.RemoveListener(OnTouch);
         avatarImporter.OnAvatarStored.AddListener(GetAvatarTransform);
-
     }
 }

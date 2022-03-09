@@ -55,7 +55,6 @@ public class AvatarAnimationController : MonoBehaviour
         return animator.GetCurrentAnimatorStateInfo(0).IsName("RightTurn") || animator.GetCurrentAnimatorStateInfo(0).IsName("LeftTurn");
     }
 
-
     private void OnDisable()
     {
         avatarImporter.OnAvatarStored.RemoveListener(AssignAvatarController);

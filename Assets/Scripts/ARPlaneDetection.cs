@@ -6,9 +6,6 @@ using UnityEngine.XR.ARFoundation;
 public class ARPlaneDetection : MonoBehaviour
 {
     [SerializeField] private ARPlaneManager arPlaneManager;
-    //[SerializeField] private GameObject floorPrefab;
-
-    //private GameObject floor;
 
     private bool isFloorPlaced;
 
@@ -34,9 +31,6 @@ public class ARPlaneDetection : MonoBehaviour
                 isFloorPlaced = true;
                 foundPlane = plane;
                 foundPlane.tag = "Floor";
-                //floor = Instantiate(floorPrefab);
-                //floor.transform.position = plane.center;
-                //floor.transform.up = plane.normal;
                 DisablePlanes();
             }
         }
